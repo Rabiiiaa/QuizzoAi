@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            background: url('c.jpeg') center/cover no-repeat;
+            justify-content: center;
+            height: 100vh;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="studentRegistrationForm">
+        <h2>Student Registration</h2>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <!-- Firebase configuration -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+       const firebaseConfig = {
+		  apiKey: "AIzaSyBQLj1X9YI9wz1O7vKz-qMO_jFp9X9MlFo",
+		  authDomain: "mypro-c9dd6.firebaseapp.com",
+		  projectId: "mypro-c9dd6",
+		  storageBucket: "mypro-c9dd6.appspot.com",
+		  messagingSenderId: "164891516035",
+		  appId: "1:164891516035:web:826ee941d353dcfaac0fb6"
+		};
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Get the Auth object
+        const auth = getAuth();
+
+        // Register event listener for the registration form
+        document.getElementById("studentRegistrationForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+             // Create user with email and password
+               createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed up successfully
+                const user = userCredential.user;
+                console.log("Successfully registered:", user);
+                // Show success message
+                alert("Registration successful! You will be redirected to the login page.");
+                // Redirect to login page after a short delay
+                setTimeout(function() {
+                    window.location.href = "studentteacherloginpage.html"; // Change "login.html" to your actual login page URL
+                }, 2000); // 2000 milliseconds = 2 seconds
+            })
+                .catch((error) => {
+                    // Handle errors
+                    console.error("Registration error:", error.message);
+                    alert("Registration failed. " + error.message);
+                });
+        });
+    </script>
+</body>
+</html>
+

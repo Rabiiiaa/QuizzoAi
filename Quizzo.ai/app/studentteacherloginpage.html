@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background: url('a.png') center/cover no-repeat;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        form {
+            background-color: lightskyblue;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            text-align: left;
+            color: #333;
+        }
+
+        select, input {
+            width: calc(100% - 12px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button, a {
+            width: 100%;
+            padding: 10px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block; /* Make sure buttons appear on separate lines */
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 15px;
+            background-color: #3498db;
+        }
+
+        .register-button {
+            margin-top: 15px;
+            background-color: #2ecc71;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 2.5em;
+            color: #fff;
+        }
+
+        p {
+            text-align: center;
+            color: #fff;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+		
+		 .register-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-button {
+            margin-top: 5px;
+            background-color: #3498db;
+        }
+		
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome To My Portal</h1>
+    <p>Teachers effortlessly create multiple-choice questions using ChatGPT or AI,<hr> 
+    streamlining assessment preparation. This AI-driven solution enhances efficiency in tailoring quizzes to specific teaching needs!</p>
+</header>
+
+<form id="LoginForm">
+  
+
+    <label for="role">Role:</label>
+    <select id="role" name="role">
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+    </select>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Login</button>
+    <div class="register-buttons">
+    <button class="register-button" onclick="window.location.href='registerpageteacher.html'">Register Teacher</button>
+    <button class="register-button" onclick="window.location.href='registerpagestudent.html'">Register Student</button>
+</div>
+
+    
+</form>
+
+<!-- Firebase configuration -->
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+     const firebaseConfig = {
+			  apiKey: "AIzaSyBQLj1X9YI9wz1O7vKz-qMO_jFp9X9MlFo",
+			  authDomain: "mypro-c9dd6.firebaseapp.com",
+			  databaseURL: "https://mypro-c9dd6-default-rtdb.asia-southeast1.firebasedatabase.app",
+			  projectId: "mypro-c9dd6",
+			  storageBucket: "mypro-c9dd6.appspot.com",
+			  messagingSenderId: "164891516035",
+			  appId: "1:164891516035:web:826ee941d353dcfaac0fb6"
+			};
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Get the Auth object
+    const auth = getAuth();
+
+    // Register event listener for the login form
+    document.getElementById("LoginForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the form from submitting
+
+        const role = document.getElementById("role").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // Sign in user with email and password
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in successfully
+            const user = userCredential.user;
+            console.log("Successfully logged in:", user);
+            // Show success message
+            alert("Login successful!");
+            
+            setTimeout(function() {
+                if (role === "student") {
+                    window.location.href = "quizz.html"; 
+                } else if (role === "teacher") {
+                    window.location.href = "generate.html";
+                } else {
+                    console.error("Invalid role:", role);
+                }
+            }, 2000);
+        })
+        .catch((error) => {
+            // Handle errors
+            console.error("Login error:", error.message);
+            alert("Login failed. " + error.message);
+        });
+    });
+
+   
+
+    
+    
+
+
+   
+    
+</script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

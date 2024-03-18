@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzo.ai</title>
+    <style>
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 3em;
+            color: #fff;
+        }
+
+        p {
+            text-align: center;
+            color: #fff;
+            font-size: 1.2em;
+            margin: 50px 0;
+        }
+
+        header {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            background: url('a.png') center/cover no-repeat;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh; /* Ensure the body fills the viewport */
+        }
+
+        .container {
+            background-color: lightskyblue;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px; /* Added margin between buttons */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #teacherForm, #quizSection, #resultSection {
+            display: none;
+            margin-top: 20px;
+        }
+
+        label, select, input {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        #teacherForm input[type="number"] {
+            width: 50px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        #quizOptions {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        #quizOptions label {
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            padding: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        #quizOptions input {
+            margin-right: 10px;
+        }
+
+        #quizOptions label:hover {
+            background-color: #ddd;
+        }
+
+        #quizOptions label.correct {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        #quizOptions label.correct:hover {
+            background-color: #45a049;
+        }
+
+        #quizOptions label.incorrect {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #quizOptions label.incorrect:hover {
+            background-color: #c0392b;
+        }
+		
+        .logout-btn {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #45a049;
+        }
+		
+		.showResult {
+            margin-top: 20px;
+        }
+		
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .container {
+                width: 90%; /* Adjust width for smaller screens */
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .container {
+                width: 95%; /* Adjust width for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome To My Portal</h1>
+    </header>
+    <div class="container">
+        <h2>Welcome Teachers!</h2>
+        <div class="button-container">
+            <button onclick="showTeacherForm()">Generate Quiz</button>
+            <button onclick="startQuiz()">View Quiz</button>
+            <button class="showResult"  onclick="showStudentResult()">Show Student Result</button>
+        </div>
+        <div id="studentResultSection"></div> <!-- Add this div to display student's result -->
+
+        <!-- Teacher Form -->
+        <div id="teacherForm">
+            <label for="category">Category:</label>
+            <select id="category">
+                <option value="history">History</option>
+                <option value="society_and_culture">Society and Culture</option>
+                <option value="film_and_tv">Film and TV</option>
+                <option value="arts_and_literature">Arts and Literature</option>
+                <option value="music">Music</option>
+                <option value="food_and_drink">Food and Drink</option>
+                <option value="science">Science</option>
+            </select>
+
+            <label for="numQuestions">Number of Questions:</label>
+            <input type="number" id="numQuestions" min="1" max="10" value="5">
+
+            <button onclick="generateCustomQuiz()">Generate Quiz</button>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quizSection">
+            <h2>Quiz</h2>
+            <div id="questionContainer"></div>
+            <div id="quizOptions"></div>
+            <button onclick="submitAnswer()">Submit Answer</button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="resultSection">
+            <h2>Result</h2>
+            <p id="quizResult"></p>
+        </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</body>
+</html>
+
+
+
+
+    <script>
+        let customQuizData = [];
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+
+        function showTeacherForm() {
+            document.getElementById('teacherForm').style.display = 'block';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+        }
+
+        async function generateCustomQuiz() {
+            const category = document.getElementById('category').value;
+            const numQuestions = document.getElementById('numQuestions').value;
+
+            let fetchedQuestions = [];
+            let remainingQuestions = numQuestions;
+
+            try {
+                while (remainingQuestions > 0) {
+                    const response = await fetch('https://the-trivia-api.com/v2/questions');
+                    const data = await response.json();
+                    const questions = data.filter(question => question.category === category);
+                    fetchedQuestions = fetchedQuestions.concat(questions);
+                    remainingQuestions -= questions.length;
+                }
+
+                customQuizData = fetchedQuestions.slice(0, numQuestions);
+                alert('Quiz generated successfully!');
+                document.getElementById('teacherForm').style.display = 'none';
+
+                // Save generated quiz to local storage
+                localStorage.setItem('customQuizData', JSON.stringify(customQuizData));
+            } catch (error) {
+                console.error('Error fetching trivia:', error);
+            }
+        }
+
+        function startQuiz() {
+            // Retrieve generated quiz from local storage
+            const savedQuizData = localStorage.getItem('customQuizData');
+            if (savedQuizData) {
+                customQuizData = JSON.parse(savedQuizData);
+
+                currentQuestionIndex = 0;
+                correctAnswers = 0;
+
+                document.getElementById('quizSection').style.display = 'block';
+                document.getElementById('resultSection').style.display = 'none';
+                displayCustomQuestion();
+            } else {
+                alert('No quiz generated yet. Please use the "Generate Quiz" button.');
+            }
+        }
+
+        function displayCustomQuestion() {
+            const questionContainer = document.getElementById('questionContainer');
+            const quizOptions = document.getElementById('quizOptions');
+
+            questionContainer.innerHTML = '';
+            quizOptions.innerHTML = '';
+
+            const currentQuestion = customQuizData[currentQuestionIndex];
+
+            const questionElement = document.createElement('p');
+            questionElement.textContent = currentQuestion.question.text;
+            questionContainer.appendChild(questionElement);
+
+            currentQuestion.incorrectAnswers.forEach((option, index) => {
+                const optionElement = document.createElement('label');
+                optionElement.innerHTML = `<input type="radio" name="quizOption" value="${index}"> ${option}`;
+                optionElement.classList.add('incorrect');
+                quizOptions.appendChild(optionElement);
+            });
+
+            const correctOptionElement = document.createElement('label');
+            correctOptionElement.innerHTML = `<input type="radio" name="quizOption" value="correct"> ${currentQuestion.correctAnswer}`;
+            correctOptionElement.classList.add('correct');
+            quizOptions.appendChild(correctOptionElement);
+        }
+
+        function submitAnswer() {
+            const selectedOption = document.querySelector('input[name="quizOption"]:checked');
+
+            if (selectedOption) {
+                const selectedValue = selectedOption.value;
+
+                if (selectedValue === 'correct') {
+                    correctAnswers++;
+                }
+
+                currentQuestionIndex++;
+
+                if (currentQuestionIndex < customQuizData.length) {
+                    displayCustomQuestion();
+                } else {
+                    showResult();
+                }
+            } else {
+                alert('Please select an option before submitting.');
+            }
+        }
+
+        function showResult() {
+            const resultSection = document.getElementById('resultSection');
+            const quizResult = document.getElementById('quizResult');
+
+            resultSection.style.display = 'block';
+            document.getElementById('quizSection').style.display = 'none';
+
+            quizResult.textContent = `You scored ${correctAnswers} out of ${customQuizData.length}!`;
+
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+        }
+		
+		
+		
+		
+		
+			
+		
+		function logout() {
+    window.location.href = 'studentteacherloginpage.html';
+}    
+
+
+       function showStudentResult() {
+            const resultSection = document.getElementById('studentResultSection');
+            const savedResult = localStorage.getItem('quizResult');
+            if (resultSection && savedResult) {
+                resultSection.innerHTML = `<p>${savedResult}</p>`;
+            } else {
+                alert('No result available.');
+            }
+        }
+
+
+		
+    </script>
+</body>
+</html>
+

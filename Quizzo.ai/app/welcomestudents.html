@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Page</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            background: url('c.jpeg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 3em;
+            margin-top: 50px; /* Adjust the top margin for "Welcome Students" */
+            margin-bottom: 20px; /* Adjust the bottom margin for "Welcome Students" */
+        }
+
+        p {
+            text-align: center;
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 50px; /* Adjust the bottom margin for the paragraph */
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.2em;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>WELCOME STUDENTS</h1>
+    <p>Hi students, you can start your quiz by clicking the "Get Started" button below.</p>
+    <div style="text-align: center;">
+        <button onclick="redirectToLogin()">GET STARTED</button>
+    </div>
+
+    <script>
+        function redirectToLogin() {
+            window.location.href = 'quizz.html'; // You can add more functionality here, such as navigating to the quiz page.
+        }
+    </script>
+</body>
+</html>
+
+
+
+ 
